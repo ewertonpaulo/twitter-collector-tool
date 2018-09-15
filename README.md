@@ -1,5 +1,5 @@
 # tweepy
 ## Requirements:
 ```
-pip install tweepy
+$ pip install tweepy
 ```
