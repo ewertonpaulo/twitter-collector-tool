@@ -2,12 +2,11 @@ import tweepy
 from db import DatabaseConnection
 
 # Autenticações
-consumer_key = 'JItXCDXKcCqulu8vx58Go6eZg'
-consumer_secret = 'Vlrza3KfonxqMpvzr4TDSG0cmrN9o6WBFkJrFAPxKuQVf5hjY3'
-access_token = '750123144-tqP5pv6sHS4YTlBQKjy6CYZA9tD6JYuITluOzxeE'
-access_token_secret = 'Eb8iNY45Z8JTTt7iytewOw5gdSTamWbddTZmeEUEWB8ue'
+consumer_key = ''
+consumer_secret = ''
+access_token = ''
+access_token_secret = ''
 # Listener of tweets
-
 
 class Listener(tweepy.StreamListener):
 
