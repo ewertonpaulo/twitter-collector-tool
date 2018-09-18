@@ -1,5 +1,7 @@
 import tweepy
-from coletor import Listener, access_token, access_token_secret, consumer_key, consumer_secret
+from coletor import Listener
+from auth import access_token, access_token_secret, consumer_key, consumer_secret
+ 
 from db import DatabaseConnection
 from time import sleep
 
