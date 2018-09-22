@@ -1,8 +1,9 @@
 import tweepy
-from db import DatabaseConnection
+from time import sleep
+from db import Database
+from auth import access_token, access_token_secret, consumer_key, consumer_secret
 
 # Listener of tweets
-
 class Listener(tweepy.StreamListener):
 
     def on_status(self, status):
@@ -26,11 +27,28 @@ class Listener(tweepy.StreamListener):
         text.encode('utf-8').decode('utf-8')
         text = text[0:]
         
-        database_connection = DatabaseConnection(name,text,image,followers,location)
-        database_connection.create_table()
-        database_connection.insert_new()
+        database_connection = Database(name,text,image,followers,location)
+        try:
+            database_connection.insert_new()
+        except:
+            database_connection.create_table()
+        
 
-        print(text)
+        #print(text)
 
     def on_error(self, status):
         print(status)
+    
+def collect(string):
+    #Instance of listener and authentications
+    listener = Listener()
+    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+    auth.set_access_token(access_token, access_token_secret)
+    stream = tweepy.Stream(auth, listener)
+    while True:
+        try:
+            print('collecting tweets with key %s' %string)
+            stream.filter(track=[string], languages=["pt"])
+        except:
+            print("waiting...")
+            sleep(5)

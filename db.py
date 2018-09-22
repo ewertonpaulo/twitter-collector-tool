@@ -1,14 +1,13 @@
 import psycopg2
 from pprint import pprint
 
-class DatabaseConnection:
+class Database:
     def __init__(self, nome, texto, imagem, seguidores, localizacao):
         self.nome = str(nome)
         self.texto = str(texto)
         self.imagem = str(imagem)
         self.seguidores = str(seguidores)
         self.localizacao = str(localizacao)
-        #self.classification = classification
 
         try:
             self.connection = psycopg2.connect(
@@ -19,7 +18,7 @@ class DatabaseConnection:
             pprint("Failure in connection")
 
     def create_table(self):
-        create_table_command = ("UPDATE TABLE tweet(id serial PRIMARY KEY, name varchar(100), text varchar(500), image varchar(100), followers varchar(100), location varchar(100), classification varchar(3));")
+        create_table_command = ("CREATE TABLE tweet(id serial PRIMARY KEY, name varchar(100), text varchar(500), image varchar(100), followers varchar(100), location varchar(100), classification varchar(3));")
         try:
             self.cursor.execute(create_table_command)
             print('Table created')
