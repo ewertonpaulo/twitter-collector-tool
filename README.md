@@ -24,7 +24,7 @@ from coletor import collect
 collect('amor')
 ```
 As paramter for collect function you can put the key word you expect to search.
-main.py is a example of script, you can run on your prompt by the following command int the directory of the aplication:
+main.py is a example of script, you can run on your prompt by the following command in the directory of the aplication:
 ```
 python main.py
 ```
