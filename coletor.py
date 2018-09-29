@@ -1,5 +1,4 @@
 import tweepy
-import psycopg2
 from senticnet_instance import sentiment
 from time import sleep
 from db import Database
@@ -19,24 +18,16 @@ class Listener(tweepy.StreamListener):
                 text = status.extended_tweet["full_text"]
             except AttributeError:
                 text = status.text
+        dt = {'name': str_(status.user.screen_name),'image': status.user.profile_image_url,'id_twitter': status.id_str,
+            'followers': status.user.followers_count,'location': str_(status.user.location)}
 
-        name = status.user.screen_name
-        image = status.user.profile_image_url
-        followers = status.user.followers_count
-        location = status.user.location
-        id_twitter = status.id_str
-        partial_classification = ''
-        name = treatment_string(name)
-        location = treatment_string(location)
-        text = treatment_string(text)
+        partial_clss = ''
+        text = str_(text)
         text = text[0:]
         
-        partial_classification = sentiment(text, partial_classification)
+        partial_clss = sentiment(text, partial_clss)
         database_connection = Database()
-        if partial_classification in ['partial_negative','partial_positive']:
-            database_connection.insert_new(id_twitter,name,text,image,followers,location, partial_classification)
-        else:
-            database_connection.insert_new(id_twitter,name,text,image,followers,location, partial_classification)
+        database_connection.insert_new(dt['id_twitter'],dt['name'],text,dt['image'],dt['followers'],dt['location'],partial_clss)
         
     def on_limit(self,status):
         print ("Rate Limit Exceeded, Sleep for 15 Mins")
@@ -59,7 +50,7 @@ def collect(string):
     print('collecting tweets with key %s' %string)
     stream.filter(track=[string], languages=["pt"])    
 
-def treatment_string(string):
+def str_(string):
     string = str(string)
     string = string.encode('utf-8').decode('utf-8')
     string = string.replace("'","´")
