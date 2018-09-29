@@ -1,4 +1,6 @@
 import tweepy
+import psycopg2
+from senticnet_instance import sentiment
 from time import sleep
 from db import Database
 from auth import access_token, access_token_secret, consumer_key, consumer_secret
@@ -18,26 +20,35 @@ class Listener(tweepy.StreamListener):
             except AttributeError:
                 text = status.text
 
-        name = str(status.user.screen_name)
-        image = str(status.user.profile_image_url)
-        followers = str(status.user.followers_count)
-        location = str(status.user.location)
-        text.replace("'","´")
-        text.replace('"',"´´")
-        text.encode('utf-8').decode('utf-8')
+        name = status.user.screen_name
+        image = status.user.profile_image_url
+        followers = status.user.followers_count
+        location = status.user.location
+        id_twitter = status.id_str
+        partial_classification = ''
+        name = treatment_string(name)
+        location = treatment_string(location)
+        text = treatment_string(text)
         text = text[0:]
         
-        database_connection = Database(name,text,image,followers,location)
-        try:
-            database_connection.insert_new()
-        except:
-            database_connection.create_table()
+        partial_classification = sentiment(text, partial_classification)
+        database_connection = Database()
+        if partial_classification in ['partial_negative','partial_positive']:
+            database_connection.insert_new(id_twitter,name,text,image,followers,location, partial_classification)
+        else:
+            database_connection.insert_new(id_twitter,name,text,image,followers,location, partial_classification)
         
-
-        #print(text)
+    def on_limit(self,status):
+        print ("Rate Limit Exceeded, Sleep for 15 Mins")
+        time.sleep(15 * 60)
+        return True
 
     def on_error(self, status):
-        print(status)
+        if(status == 420):
+            print ("Twitter is limiting this account.")
+            return True
+        else:
+            print ("Error Status "+ str(status))
     
 def collect(string):
     #Instance of listener and authentications
@@ -45,10 +56,12 @@ def collect(string):
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
     stream = tweepy.Stream(auth, listener)
-    while True:
-        try:
-            print('collecting tweets with key %s' %string)
-            stream.filter(track=[string], languages=["pt"])
-        except:
-            print("waiting...")
-            sleep(5)
+    print('collecting tweets with key %s' %string)
+    stream.filter(track=[string], languages=["pt"])    
+
+def treatment_string(string):
+    string = str(string)
+    string = string.encode('utf-8').decode('utf-8')
+    string = string.replace("'","´")
+    string = string.replace('"',"´")
+    return string

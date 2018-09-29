@@ -1,4 +1,3 @@
-from coletor import Listener, collect
+from coletor import collect
 
-if __name__ == '__main__':
-    collect('amor')
+collect('amor')
