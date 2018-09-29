@@ -6,16 +6,22 @@ $ pip install tweepy
 ```
 $ pip install psycopg2
 ```
-twitter-collector works with postgresSQL, before run, configure the connection in the file db.py line 14.
 ## How to use:
-Create a file named auth.py with your own twitter api keys by the following script:
+Create a file named auth.py with your own twitter api keys and postgresSql data of connection keys by the following script:
 ### auth.py
 ```py
 # Authentications
-consumer_key = 'your_consumer_key_here'
-consumer_secret = 'your_consumer_secret_here'
-access_token = 'your_access_token_here'
-access_token_secret = 'your_access_token_secret_here'
+consumer_key = 'your consumer key here'
+consumer_secret = 'your consumer secret here'
+access_token = 'your access token here'
+access_token_secret = 'your access token secret here'
+
+# DataBase connection keys
+dbname='your database name here'
+user='your user here'
+host='your host here' #by default postgres uses 'localhost'
+password='your password here'
+port='your port here' #by default postgres uses '5432'
 ```
 ### example.py
 ```py
