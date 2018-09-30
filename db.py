@@ -13,7 +13,7 @@ class Database:
             pprint("Failure in connection")
         try:
             create_table_command = ("CREATE TABLE tweet(id serial PRIMARY KEY, id_twitter varchar(50),\
-             name varchar(500), text varchar(500), image varchar(300), followers integer, location varchar(100),\
+             name varchar(500), text varchar(500), image varchar(300), followers integer, location varchar(200),\
              classification varchar(216));")
             self.cursor.execute(create_table_command)
             print('Table created')
@@ -24,4 +24,7 @@ class Database:
         insert_command = ("INSERT INTO tweet(id_twitter, name, text, image, followers, location, classification)\
          VALUES('%s','%s','%s','%s','%d','%s','%s')" 
         %(id_twitter, name, text, image, followers, location,classification))
-        self.cursor.execute(insert_command)
+        try:
+            self.cursor.execute(insert_command)
+        except:
+            pass

@@ -32,7 +32,7 @@ def avg(lst, size):
 
 def treatment_string(string):
     string = string.lower()
-    sign = ['.',',','!','?','(',')','´']
+    sign = ['.',',','!','?','(',')','´','*','#','@',';',':']
     for i in sign:
         try:
             string = string.replace(i,'')
