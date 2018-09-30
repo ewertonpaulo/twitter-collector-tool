@@ -6,6 +6,9 @@ $ pip install tweepy
 ```
 $ pip install psycopg2
 ```
+```
+$ pip install senticnet
+```
 ## How to use:
 Create a file named auth.py with your own twitter api keys and postgresSql data of connection keys by the following script:
 ### auth.py
