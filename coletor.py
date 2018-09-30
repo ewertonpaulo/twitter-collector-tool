@@ -29,13 +29,16 @@ class Listener(tweepy.StreamListener):
             except AttributeError:
                 text = status.text
         dt = {'name':str_(status.user.screen_name),'image':status.user.profile_image_url,'id_twitter':status.id_str,
-            'followers':status.user.followers_count,'location':str_(status.user.location), 'partial_clss':''}
+            'followers':status.user.followers_count,'location':str_(status.user.location)}
 
         text = str_(text)
         text = text[0:]
         database_connection = Database()
-        database_connection.insert_new(
-            dt['id_twitter'],dt['name'],text,dt['image'],dt['followers'],dt['location'],sentiment(text, dt['partial_clss']))
+        if sentiment(text) == True:
+            database_connection.insert_new(
+                dt['id_twitter'],dt['name'],text,dt['image'],dt['followers'],dt['location'])
+        else:
+            print(sentiment(text))
     
     def do_stuff(self):
         while True:

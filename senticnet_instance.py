@@ -1,10 +1,9 @@
 from senticnet.senticnet import SenticNet
 
-def sentiment(text, partial_classification):
+def sentiment(text):
     sn = SenticNet('pt')
-    value = 0
     list_polarity = []
-    list_avg = {'psv' : [0.01], 'ngt' : [-0.01]}
+    l_avg = {'psv' : [0.01], 'ngt' : [-0.01]}
     qtd_words = len(text)
     temp = text.split()
     avg_n = 0
@@ -17,18 +16,13 @@ def sentiment(text, partial_classification):
             i+=1
 
     avg_n = avg(list_polarity, qtd_words)
-    if avg_n > 0 and avg_n > list_avg['psv'][0]:
-        partial_classification = 'partial_positive %s' %avg_n
-        return partial_classification
-    if avg_n < 0 and avg_n < list_avg['ngt'][0]:
-        partial_classification = 'partial_negative %s' %avg_n
-        return partial_classification
+    if avg_n < l_avg['psv'][0] and avg_n > l_avg['ngt'][0]:
+        return text + "// '%s'" %avg_n
     else:
-        partial_classification = 'partial_neutral %s' %avg_n
-        return partial_classification
+        return True
         
 def avg(lst, size):
-    return sum(lst) / size
+    return avg_ = sum(lst) / size
 
 def treatment_string(string):
     string = string.lower()

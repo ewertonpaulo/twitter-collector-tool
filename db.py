@@ -20,10 +20,10 @@ class Database:
         except:
             pass
 
-    def insert_new(self,id_twitter, name, text, image, followers, location, classification):
-        insert_command = ("INSERT INTO tweet(id_twitter, name, text, image, followers, location, classification)\
-         VALUES('%s','%s','%s','%s','%d','%s','%s')" 
-        %(id_twitter, name, text, image, followers, location,classification))
+    def insert_new(self,id_twitter,name,text,image,followers,location):
+        insert_command = ("INSERT INTO tweet(id_twitter, name, text, image, followers, location)\
+         VALUES('%s','%s','%s','%s','%d','%s')" 
+        %(id_twitter,name,text,image,followers,location))
         try:
             self.cursor.execute(insert_command)
         except:
