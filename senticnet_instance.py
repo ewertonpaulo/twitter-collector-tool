@@ -22,7 +22,7 @@ def sentiment(text):
         return True
         
 def avg(lst, size):
-    return avg_ = sum(lst) / size
+    return sum(lst) / size
 
 def treatment_string(string):
     string = string.lower()
