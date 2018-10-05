@@ -33,7 +33,3 @@ def treatment_string(string):
             return string
         except:
             pass
-
-if __name__=='__main__':
-    print(sentiment('eu andava com tantas pessoas inteligentes e não fiquei inteligente, o que deu errado nesse raciocínio'))
-    print(-0.008453488372093023 < -0.005 )
