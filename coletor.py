@@ -11,7 +11,7 @@ class Listener(tweepy.StreamListener):
     def __init__(self, q = Queue()):
         super().__init__()
         self.q = q
-        for i in range(100):
+        for i in range(4):
             t = Thread(target=self.do_stuff)
             t.daemon = True
             t.start()
@@ -33,12 +33,15 @@ class Listener(tweepy.StreamListener):
 
         text = str_(text)
         text = text[0:]
-        database_connection = Database()
-        if sentiment(text) == True and database_connection.find(text) == True:
-            database_connection.insert_new(
+        
+        db = Database()
+        if sentiment(text) == True and db.find(text) == True:
+            
+            db.insert_new(
                 dt['id_twitter'],dt['name'],text,dt['image'],dt['followers'],dt['location'])
+            print(text)
         else:
-            print(sentiment(text))
+            pass
     
     def do_stuff(self):
         while True:

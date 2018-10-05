@@ -3,7 +3,7 @@ from senticnet.senticnet import SenticNet
 def sentiment(text):
     sn = SenticNet('pt')
     list_polarity = []
-    l_avg = {'psv' : [0.0015], 'ngt' : [-0.0015]}
+    l_avg = {'psv' : [0.003], 'ngt' : [-0.003]}
     qtd_words = len(text)
     temp = text.split()
     avg_n = 0
@@ -16,10 +16,10 @@ def sentiment(text):
             i+=1
 
     avg_n = avg(list_polarity, qtd_words)
-    if avg_n < l_avg['psv'][0] and avg_n > l_avg['ngt'][0]:
-        return text + "// '%s'" %avg_n
-    else:
+    if avg_n > l_avg['psv'][0] or avg_n < l_avg['ngt'][0]:
         return True
+    else:
+        return text + "// '%s'" %avg_n
         
 def avg(lst, size):
     return sum(lst) / size
@@ -33,3 +33,7 @@ def treatment_string(string):
             return string
         except:
             pass
+
+if __name__=='__main__':
+    print(sentiment('eu andava com tantas pessoas inteligentes e não fiquei inteligente, o que deu errado nesse raciocínio'))
+    print(-0.008453488372093023 < -0.005 )
