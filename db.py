@@ -10,7 +10,7 @@ class Database:
             self.connection.autocommit = True
             self.cursor = self.connection.cursor()
         except:
-            pprint("Failure in connection")
+            print("Failure in connection")
         try:
             create_table_command = ("CREATE TABLE tweet(id serial PRIMARY KEY, id_twitter varchar(50),\
              name varchar(500), text varchar(500), image varchar(300), followers integer, location varchar(200),\
@@ -28,3 +28,12 @@ class Database:
             self.cursor.execute(insert_command)
         except:
             pass
+
+    def find(self, text):
+        sql = "SELECT text FROM public.tweet WHERE text = '%s' ORDER BY id ASC " %text
+        self.cursor.execute(sql)
+        rs = self.cursor.fetchall();
+        if len(rs)==0:
+            return True
+        else:
+            return False

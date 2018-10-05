@@ -11,7 +11,7 @@ class Listener(tweepy.StreamListener):
     def __init__(self, q = Queue()):
         super().__init__()
         self.q = q
-        for i in range(4):
+        for i in range(100):
             t = Thread(target=self.do_stuff)
             t.daemon = True
             t.start()
@@ -34,7 +34,7 @@ class Listener(tweepy.StreamListener):
         text = str_(text)
         text = text[0:]
         database_connection = Database()
-        if sentiment(text) == True:
+        if sentiment(text) == True and database_connection.find(text) == True:
             database_connection.insert_new(
                 dt['id_twitter'],dt['name'],text,dt['image'],dt['followers'],dt['location'])
         else:
@@ -47,7 +47,7 @@ class Listener(tweepy.StreamListener):
 
     def on_limit(self,status):
         print ("Rate Limit Exceeded, Sleep for 15 Mins")
-        time.sleep(15 * 60)
+        time.sleep(60)
         return True
 
     def on_error(self, status):
@@ -57,14 +57,17 @@ class Listener(tweepy.StreamListener):
         else:
             print ("Error Status "+ str(status))
 
-
 def collect(string):
     listener = Listener()
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
     stream = tweepy.Stream(auth, listener)
     print('collecting tweets with key %s' %string)
-    stream.filter(track=[string], languages=["pt"])  
+    while True:
+        try:
+            stream.filter(track=[string], languages=["pt"])
+        except:
+            continue
 
 def str_(string):
     string = str(string)

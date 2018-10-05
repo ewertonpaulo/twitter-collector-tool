@@ -3,7 +3,7 @@ from senticnet.senticnet import SenticNet
 def sentiment(text):
     sn = SenticNet('pt')
     list_polarity = []
-    l_avg = {'psv' : [0.01], 'ngt' : [-0.01]}
+    l_avg = {'psv' : [0.0015], 'ngt' : [-0.0015]}
     qtd_words = len(text)
     temp = text.split()
     avg_n = 0
