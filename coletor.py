@@ -75,6 +75,6 @@ def collect(string):
 def str_(string):
     string = str(string)
     string = string.encode('utf-8').decode('utf-8')
-    string = string.replace("'","´")
-    string = string.replace('"',"´")
+    string = string.replace("'","\'")
+    string = string.replace('"',"\"")
     return string
