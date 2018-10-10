@@ -49,8 +49,8 @@ class Listener(tweepy.StreamListener):
             self.q.task_done()
 
     def on_limit(self,status):
-        print ("Rate Limit Exceeded, Sleep for 15 Mins")
-        time.sleep(60)
+        print ("Rate Limit Exceeded, Sleep for 1 min")
+        sleep(5)
         return True
 
     def on_error(self, status):
