@@ -41,7 +41,7 @@ class Listener(tweepy.StreamListener):
                 dt['id_twitter'],dt['name'],text,dt['image'],dt['followers'],dt['location'])
             print(text)
         else:
-            pass
+            print('aff')
     
     def do_stuff(self):
         while True:
