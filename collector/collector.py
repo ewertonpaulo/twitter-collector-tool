@@ -1,9 +1,9 @@
 import tweepy
 from time import sleep
-from db import Database
+from collector.db import Database
 from queue import Queue
 from threading import Thread 
-from senticnet_instance import sentiment
+from collector.senticnet_instance import sentiment
 from auth import access_token, access_token_secret, consumer_key, consumer_secret
 
 # Listener of tweets
@@ -41,7 +41,7 @@ class Listener(tweepy.StreamListener):
                 dt['id_twitter'],dt['name'],text,dt['image'],dt['followers'],dt['location'])
             print(text)
         else:
-            print('aff')
+            pass
     
     def do_stuff(self):
         while True:

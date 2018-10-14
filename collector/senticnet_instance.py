@@ -34,14 +34,10 @@ def treatment_string(string):
         except:
             pass
 
-def adjetivos(list):
-    dir_ = 'adjetivos.txt'
+def adjetivos():
+    dir_ = 'collector/adjetivos.txt'
     data = open(dir_,'r')
     list = data.readline()
     list = list.split()
     data.close()
     return list
-
-if __name__=='__main__':
-    list = []
-    adjetivos(list)
