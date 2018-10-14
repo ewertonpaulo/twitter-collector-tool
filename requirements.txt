@@ -1,0 +1,3 @@
+psycopg2==2.7.5
+tweepy==3.6.0
+virtualenv==16.0.0
