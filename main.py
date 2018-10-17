@@ -1,6 +1,7 @@
 import random
-from collector.senticnet_instance import adjetivos
-from collector.collector import collect
+from src.senticnet_instance import adjetivos
+from src.collector import collect
 
+word = random.choice(adjetivos())
 
-collect(random.choice(adjetivos()))
+collect('amor')

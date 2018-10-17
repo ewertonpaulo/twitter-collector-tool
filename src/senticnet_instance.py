@@ -1,4 +1,5 @@
 from senticnet.senticnet import SenticNet
+import codecs
 
 def sentiment(text):
     sn = SenticNet('pt')
@@ -19,7 +20,7 @@ def sentiment(text):
     if avg_n > l_avg['psv'][0] or avg_n < l_avg['ngt'][0]:
         return True
     else:
-        return text + "// '%s'" %avg_n
+        return False
         
 def avg(lst, size):
     return sum(lst) / size
@@ -35,9 +36,8 @@ def treatment_string(string):
             pass
 
 def adjetivos():
-    dir_ = 'collector/adjetivos.txt'
-    data = open(dir_,'r')
+    dir_ = 'src/layout-one.txt'
+    data = codecs.open(dir_,'r','utf8')
     list = data.readline()
-    list = list.split()
     data.close()
-    return list
+    return list.split()
