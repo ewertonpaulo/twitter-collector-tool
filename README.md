@@ -25,16 +25,19 @@ user='your user here'
 host='your host here' #by default postgres uses 'localhost'
 password='your password here'
 port='your port here' #by default postgres uses '5432'
+
+#Define if you want to filter neutral tweets
+sentiment_boolean = True
 ```
 ### example.py
 ```py
 from coletor import collect
 
-collect('amor')
+collect()
 ```
-As paramter for collect function you can put the key word you expect to search.
+The function collect will pick a adjective of a txt file and start the search.
 main.py is a example of script, you can run on your prompt by the following command in the directory of the aplication:
 ```
 python main.py
 ```
-A message as 'collecting tweets with key amor' will confirm the correct run.
+A message as 'collecting tweets with key someadjective' will confirm the correct run.
