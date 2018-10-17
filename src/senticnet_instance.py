@@ -1,7 +1,10 @@
 from senticnet.senticnet import SenticNet
 import codecs
+from auth import sentiment_boolean
 
 def sentiment(text):
+    if sentiment_boolean == False:
+        return True
     sn = SenticNet('pt')
     list_polarity = []
     l_avg = {'psv' : [0.003], 'ngt' : [-0.003]}
@@ -35,7 +38,7 @@ def treatment_string(string):
         except:
             pass
 
-def adjetivos():
+def adjectives():
     dir_ = 'src/layout-one.txt'
     data = codecs.open(dir_,'r','utf8')
     list = data.readline()
