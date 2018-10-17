@@ -4,4 +4,4 @@ from src.collector import collect
 
 word = random.choice(adjetivos())
 
-collect('amor')
+collect(word)
