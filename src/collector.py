@@ -9,8 +9,6 @@ from auth import access_token, access_token_secret, consumer_key, consumer_secre
 # Listener of tweets
 class Listener(tweepy.StreamListener):
     def __init__(self, q = Queue()):
-        self.start_time = time.time()
-        self.limit = 10
         super().__init__()
         self.q = q
         self.counter=0
