@@ -10,7 +10,7 @@ $ pip install psycopg2
 $ pip install senticnet
 ```
 ## How to use:
-Create a file named auth.py with your own twitter api keys and postgresSql data of connection keys by the following script:
+Create a file named auth.py with your own twitter api and postgresSql keys. You also have to add a boolean variable named sentiment_boolean who will define if the script will filter from saving the neutral tweets or not.
 ### auth.py
 ```py
 # Authentications
@@ -26,7 +26,7 @@ host='your host here' #by default postgres uses 'localhost'
 password='your password here'
 port='your port here' #by default postgres uses '5432'
 
-#Define if you want to filter neutral tweets
+#Define the value to filter or not neutral tweets
 sentiment_boolean = True
 ```
 ### example.py
