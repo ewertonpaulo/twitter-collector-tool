@@ -1,13 +1,7 @@
 # tweepy
 ## Environment:
 ```
-$ pip install tweepy
-```
-```
-$ pip install psycopg2
-```
-```
-$ pip install senticnet
+$ pip install -r requirements.txt
 ```
 ## How to use:
 Create a file named auth.py with your own twitter api and postgresSql keys. You also have to add a boolean variable named sentiment_boolean who will define if the script will filter from saving the neutral tweets or not.
