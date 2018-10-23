@@ -66,7 +66,7 @@ def collect():
     print('collecting tweets with key %s' %string)
     while True:
         try:
-            stream.filter(track=string, languages=["pt"])
+            stream.filter(track=[string], languages=["pt"])
         except KeyboardInterrupt:
             stream.disconnect()
             break
