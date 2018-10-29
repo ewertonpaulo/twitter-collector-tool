@@ -1,4 +1,5 @@
 import tweepy, sys, time, random
+from unicodedata import normalize
 from time import sleep
 from src.db import Database
 from queue import Queue
@@ -63,10 +64,11 @@ def collect():
     auth.set_access_token(access_token, access_token_secret)
     stream = tweepy.Stream(auth, listener)
     string = random.choice(adjectives())
+    string = normalize('NFKD', string).encode('ASCII', 'ignore').decode('ASCII')
     print('collecting tweets with key %s' %string)
     while True:
         try:
-            stream.filter(track=[string], languages=["pt"])
+            stream.filter(track=['amor'], languages=["pt"])
         except KeyboardInterrupt:
             stream.disconnect()
             break

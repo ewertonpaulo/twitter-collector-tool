@@ -5,8 +5,8 @@ class Database:
     def __init__(self):
         try:
             self.connection = psycopg2.connect(
-                "dbname='%s' user='%s' host='%s' password='%s' port='%s'"
-                %(dbname,user,host,password,port))
+                "dbname='%s' user='%s' host='%s' password='%s'"
+                %(dbname,user,host,password))
             self.connection.autocommit = True
             self.cursor = self.connection.cursor()
         except:
