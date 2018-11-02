@@ -11,6 +11,8 @@ class Database:
             self.cursor = self.connection.cursor()
         except:
             print("Failure in connection")
+            
+    def create_table(self):
         try:
             create_table_command = ("CREATE TABLE tweet(id serial PRIMARY KEY, id_twitter varchar(50),\
              name varchar(500), text varchar(500), image varchar(300), followers integer, location varchar(200),\
@@ -19,7 +21,6 @@ class Database:
             print('Table created')
         except:
             pass
-
     def insert_new(self,id_twitter,name,text,image,followers,location):
         insert_command = ("INSERT INTO tweet(id_twitter, name, text, image, followers, location)\
          VALUES('%s','%s','%s','%s','%d','%s')" 

@@ -60,6 +60,8 @@ class Listener(tweepy.StreamListener):
 
 def collect():
     listener = Listener()
+    db = Database()
+    db.create_table()
     auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
     auth.set_access_token(access_token, access_token_secret)
     stream = tweepy.Stream(auth, listener)
@@ -68,7 +70,7 @@ def collect():
     print('collecting tweets with key %s' %string)
     while True:
         try:
-            stream.filter(track=['amor'], languages=["pt"])
+            stream.filter(track=[string], languages=["pt"])
         except KeyboardInterrupt:
             stream.disconnect()
             break
