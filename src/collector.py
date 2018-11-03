@@ -66,8 +66,8 @@ def collect():
     auth.set_access_token(access_token, access_token_secret)
     stream = tweepy.Stream(auth, listener)
     string = random.choice(adjectives())
-    string = normalize('NFKD', string).encode('ASCII', 'ignore').decode('ASCII')
-    print('collecting tweets with key %s' %string)
+    show = normalize('NFKD', string).encode('ASCII', 'ignore').decode('ASCII')
+    print('collecting tweets with key %s' %show)
     while True:
         try:
             stream.filter(track=[string], languages=["pt"])
