@@ -49,7 +49,7 @@ class Listener(tweepy.StreamListener):
             self.q.task_done()
 
     def on_limit(self,status):
-        sleep(30)
+        sleep(5)
         return True
 
     def on_error(self, status):
