@@ -9,17 +9,11 @@ from auth import access_token, access_token_secret, consumer_key, consumer_secre
 
 # Listener of tweets
 class Listener(tweepy.StreamListener):
-    def __init__(self, q = Queue()):
+    def __init__(self):
         super().__init__()
-        self.q = q
         self.counter=0
-        for i in range(4):
-            t = Thread(target=self.do_stuff)
-            t.daemon = True
-            t.start()
 
     def on_status(self, status):
-        self.q.put(status)
         if hasattr(status, 'retweeted_status'):
             try:
                 text = status.retweeted_status.extended_tweet["full_text"]
@@ -42,11 +36,6 @@ class Listener(tweepy.StreamListener):
             sys.stdout.flush()
         else:
             pass
-    
-    def do_stuff(self):
-        while True:
-            self.q.get()
-            self.q.task_done()
 
     def on_limit(self,status):
         sleep(5)
@@ -67,10 +56,10 @@ def collect():
     stream = tweepy.Stream(auth, listener)
     string = random.choice(adjectives())
     show = normalize('NFKD', string).encode('ASCII', 'ignore').decode('ASCII')
-    print('collecting tweets with key %s' %show)
+    print('collecting tweets with key a')
     while True:
         try:
-            stream.filter(track=[string], languages=["pt"])
+            stream.filter(track=['a'], languages=["pt"])
         except KeyboardInterrupt:
             stream.disconnect()
             break
