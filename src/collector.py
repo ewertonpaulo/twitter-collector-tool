@@ -9,13 +9,13 @@ from auth import access_token, access_token_secret, consumer_key, consumer_secre
 
 # Listener of tweets
 class Listener(tweepy.StreamListener):
-    def __init__(self, q = Queue()):
+    def __init__(self,q = Queue()):
         super().__init__()
         self.q = q
         self.counter=0
-        for i in range(4):
-            t = Thread(target=self.do_stuff)
-            t.daemon = True
+        for i in range(2):	
+            t = Thread(target=self.do_stuff)	
+            t.daemon = True	
             t.start()
 
     def on_status(self, status):
@@ -35,22 +35,22 @@ class Listener(tweepy.StreamListener):
         text = str_(text)
         text = text[0:]
         db = Database()
-        if sentiment(text) == True and db.find(text) == True:
+        if sentiment(text) and db.find(text):
             self.counter = self.counter + 1
             db.insert_new(dt['id_twitter'],dt['name'],text,dt['image'],dt['followers'],dt['location'])
             sys.stdout.write("\r%d tweets coletados" % self.counter)
             sys.stdout.flush()
         else:
             pass
-    
-    def do_stuff(self):
-        while True:
-            self.q.get()
-            self.q.task_done()
 
     def on_limit(self,status):
         sleep(5)
         return True
+    
+    def do_stuff(self):	
+        while True:	
+            self.q.get()	
+            self.q.task_done()
 
     def on_error(self, status):
         if(status == 420):

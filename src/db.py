@@ -1,4 +1,4 @@
-import psycopg2
+import psycopg2, difflib
 from auth import dbname,host,password,port,user
 
 class Database:
@@ -31,10 +31,11 @@ class Database:
             pass
 
     def find(self, text):
-        sql = "SELECT text FROM public.tweet WHERE text = '%s' ORDER BY id ASC " %text
+        sql = "SELECT text FROM public.tweet ORDER BY id ASC"
         self.cursor.execute(sql)
-        rs = self.cursor.fetchall();
-        if len(rs)==0:
-            return True
-        else:
+        all = [r[0] for r in self.cursor.fetchall()]
+        diff = difflib.get_close_matches(text, all)
+        if diff:
             return False
+        else:
+            return True
