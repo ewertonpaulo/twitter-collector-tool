@@ -29,7 +29,7 @@ class Listener(tweepy.StreamListener):
         text = str_(text)
         text = text[0:]
         db = Database()
-        if sentiment(text) == True and db.find(text) == True:
+        if sentiment(text) and db.find(text):
             self.counter = self.counter + 1
             db.insert_new(dt['id_twitter'],dt['name'],text,dt['image'],dt['followers'],dt['location'])
             sys.stdout.write("\r%d tweets coletados" % self.counter)
@@ -56,10 +56,10 @@ def collect():
     stream = tweepy.Stream(auth, listener)
     string = random.choice(adjectives())
     show = normalize('NFKD', string).encode('ASCII', 'ignore').decode('ASCII')
-    print('collecting tweets with key a')
+    print('collecting tweets with key %s' %show)
     while True:
         try:
-            stream.filter(track=['a'], languages=["pt"])
+            stream.filter(track=[string], languages=["pt"])
         except KeyboardInterrupt:
             stream.disconnect()
             break

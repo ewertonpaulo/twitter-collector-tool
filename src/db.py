@@ -34,10 +34,8 @@ class Database:
         sql = "SELECT text FROM public.tweet ORDER BY id ASC"
         self.cursor.execute(sql)
         all = [r[0] for r in self.cursor.fetchall()]
-        print(all)
         diff = difflib.get_close_matches(text, all)
         if diff:
-            print(diff)
             return False
         else:
             return True
