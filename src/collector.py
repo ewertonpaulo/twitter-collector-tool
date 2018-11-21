@@ -9,11 +9,17 @@ from auth import access_token, access_token_secret, consumer_key, consumer_secre
 
 # Listener of tweets
 class Listener(tweepy.StreamListener):
-    def __init__(self):
+    def __init__(self,q = Queue()):
         super().__init__()
+        self.q = q
         self.counter=0
+        for i in range(2):	
+            t = Thread(target=self.do_stuff)	
+            t.daemon = True	
+            t.start()
 
     def on_status(self, status):
+        self.q.put(status)
         if hasattr(status, 'retweeted_status'):
             try:
                 text = status.retweeted_status.extended_tweet["full_text"]
@@ -40,6 +46,11 @@ class Listener(tweepy.StreamListener):
     def on_limit(self,status):
         sleep(5)
         return True
+    
+    def do_stuff(self):	
+        while True:	
+            self.q.get()	
+            self.q.task_done()
 
     def on_error(self, status):
         if(status == 420):
