@@ -39,7 +39,7 @@ def treatment_string(string):
             pass
 
 def adjectives():
-    dir_ = 'src/layout-one.txt'
+    dir_ = 'tweetcollector/layout-one.txt'
     data = codecs.open(dir_,'r','utf8')
     list = data.readline()
     data.close()
