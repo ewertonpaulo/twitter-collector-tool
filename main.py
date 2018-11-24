@@ -1,3 +1,3 @@
 from src.collector import collect
 
-collect()
+collect(5)

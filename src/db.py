@@ -21,16 +21,16 @@ class Database:
             print('Table created')
         except:
             pass
-    def insert_new(self,id_twitter,name,text,image,followers,location):
+    def save(self,id_twitter,name,text,image,followers,location):
         insert_command = ("INSERT INTO tweet(id_twitter, name, text, image, followers, location)\
          VALUES('%s','%s','%s','%s','%d','%s')" 
-        %(id_twitter,name,text,image,followers,location))
+        %(id_twitter,self.str_(name),self.str_(text),image,followers,self.str_(location)))
         try:
             self.cursor.execute(insert_command)
         except:
             pass
 
-    def find(self, text):
+    def matches(self, text):
         sql = "SELECT text FROM public.tweet ORDER BY id ASC"
         self.cursor.execute(sql)
         all = [r[0] for r in self.cursor.fetchall()]
@@ -39,3 +39,10 @@ class Database:
             return False
         else:
             return True
+
+    def str_(self,string):
+        string = str(string)
+        string = string.encode('utf-8').decode('utf-8')
+        string = string.replace("'","\'")
+        string = string.replace('"',"\"")
+        return string
