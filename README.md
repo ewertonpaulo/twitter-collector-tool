@@ -27,9 +27,9 @@ sentiment_boolean = True
 ```py
 from coletor import collect
 
-collect()
+collect(5)
 ```
-The function collect will pick a adjective of a txt file and start the search.
+The function collect will pick a adjective of a txt file and start the search. As parameter of collect you put the number of minuts you expect to search.
 main.py is a example of script, you can run on your prompt by the following command in the directory of the aplication:
 ```
 python main.py
