@@ -1,3 +1,3 @@
-from src.collector import collect
+from tweetcollector.collector import collect
 
 collect(5)

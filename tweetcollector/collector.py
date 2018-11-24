@@ -1,7 +1,7 @@
 import tweepy, random, time
-from src.db import Database
+from tweetcollector.db import Database
 from unicodedata import normalize
-from src.senticnet_instance import sentiment, adjectives
+from tweetcollector.senticnet_instance import sentiment, adjectives
 from auth import access_token, access_token_secret, consumer_key, consumer_secret
 
 auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
