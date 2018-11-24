@@ -27,16 +27,11 @@ def save_data(results):
 def collect(minutes):
     db = Database()
     db.create_table()
-    string = random.choice(adjectives())
-    print('collecting tweets with key %s for %d minutes' %(normalize('NFKD', string).encode('ASCII', 'ignore').decode('ASCII'),minutes))
-    last_id = 1
+    query = random.choice(adjectives())
+    print('collecting tweets with key %s for %d minutes' %(normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'),minutes))
     timeout = time.time() + 60*minutes
     while True:
-        results = api.search(q=string,since_id=last_id, count=100, tweet_mode="extended", lang="pt")
-        try:
-            last_id=results[-1].id
-        except:
-            last_id=1
+        results = tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items()
         save_data(results)
         if time.time() > timeout:
             break
