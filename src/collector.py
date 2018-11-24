@@ -1,85 +1,42 @@
-import tweepy, sys, time, random
-from unicodedata import normalize
-from time import sleep
+import tweepy, random, time
 from src.db import Database
-from queue import Queue
-from threading import Thread 
+from unicodedata import normalize
 from src.senticnet_instance import sentiment, adjectives
 from auth import access_token, access_token_secret, consumer_key, consumer_secret
 
-# Listener of tweets
-class Listener(tweepy.StreamListener):
-    def __init__(self,q = Queue()):
-        super().__init__()
-        self.q = q
-        self.counter=0
-        for i in range(2):	
-            t = Thread(target=self.do_stuff)	
-            t.daemon = True	
-            t.start()
+auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+auth.set_access_token(access_token, access_token_secret)
 
-    def on_status(self, status):
-        self.q.put(status)
-        if hasattr(status, 'retweeted_status'):
-            try:
-                text = status.retweeted_status.extended_tweet["full_text"]
-            except:
-                text = status.retweeted_status.text
-        else:
-            try:
-                text = status.extended_tweet["full_text"]
-            except AttributeError:
-                text = status.text
-        dt = {'name':str_(status.user.screen_name),'image':status.user.profile_image_url,'id_twitter':status.id_str,
-            'followers':status.user.followers_count,'location':str_(status.user.location)}
-        text = str_(text)
-        text = text[0:]
-        db = Database()
-        if sentiment(text) and db.find(text):
-            self.counter = self.counter + 1
-            db.insert_new(dt['id_twitter'],dt['name'],text,dt['image'],dt['followers'],dt['location'])
-            sys.stdout.write("\r%d tweets coletados" % self.counter)
-            sys.stdout.flush()
-        else:
-            pass
+api = tweepy.API(auth, wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
 
-    def on_limit(self,status):
-        sleep(5)
-        return True
-    
-    def do_stuff(self):	
-        while True:	
-            self.q.get()	
-            self.q.task_done()
+def save_data(results):
+    db = Database()
+    for result in results:
+        try:
+            text = result.retweeted_status.full_text
+        except:
+            text = result.full_text
+        name = result.user.screen_name
+        img = result.user.profile_image_url
+        id_user = result.id
+        followers = result.user.followers_count
+        location = result.user.location
+        if sentiment(text) and db.matches(text):
+            db.save(id_user,name,text,img,followers,location)
 
-    def on_error(self, status):
-        if(status == 420):
-            return True
-        else:
-            print("Error Status "+ str(status))
-
-def collect():
-    listener = Listener()
+def collect(minutes):
     db = Database()
     db.create_table()
-    auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-    auth.set_access_token(access_token, access_token_secret)
-    stream = tweepy.Stream(auth, listener)
     string = random.choice(adjectives())
-    show = normalize('NFKD', string).encode('ASCII', 'ignore').decode('ASCII')
-    print('collecting tweets with key %s' %show)
+    print('collecting tweets with key %s for %d minutes' %(normalize('NFKD', string).encode('ASCII', 'ignore').decode('ASCII'),minutes))
+    last_id = 1
+    timeout = time.time() + 60*minutes
     while True:
-        try:
-            stream.filter(track=[string], languages=["pt"])
-        except KeyboardInterrupt:
-            stream.disconnect()
+        if time.time() > timeout:
             break
+        results = api.search(q=string,since_id=last_id, count=100, tweet_mode="extended", lang="pt")
+        try:
+            last_id=results[-1].id
         except:
-            continue
-
-def str_(string):
-    string = str(string)
-    string = string.encode('utf-8').decode('utf-8')
-    string = string.replace("'","\'")
-    string = string.replace('"',"\"")
-    return string
+            last_id=1
+        save_data(results)
