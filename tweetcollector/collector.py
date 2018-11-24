@@ -32,11 +32,11 @@ def collect(minutes):
     last_id = 1
     timeout = time.time() + 60*minutes
     while True:
-        if time.time() > timeout:
-            break
         results = api.search(q=string,since_id=last_id, count=100, tweet_mode="extended", lang="pt")
         try:
             last_id=results[-1].id
         except:
             last_id=1
         save_data(results)
+        if time.time() > timeout:
+            break
