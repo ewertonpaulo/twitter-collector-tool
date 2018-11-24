@@ -25,7 +25,7 @@ sentiment_boolean = True
 ```
 ### example.py
 ```py
-from coletor import collect
+from tweetcollector.collector import collect
 
 collect(5)
 ```
