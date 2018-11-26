@@ -23,14 +23,18 @@ def save_data(result):
     if sentiment(text) and db.matches(text):
         db.save(id_user,name,text,img,followers,location)
 
-def collect(minutes):
+def collect(min_per_query,min_search):
     db = Database()
     db.create_table()
-    for i in range(len(adjectives())):
+    search_time = time.time() + min_search*60
+    while time.time() < search_time:
+        timeout = time.time() + min_per_query*60
         query = random.choice(adjectives())
         print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
         for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
             if result:
                 save_data(result)
+            elif time.time() > timeout:
+                break
             else:
                 break
