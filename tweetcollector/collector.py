@@ -9,29 +9,28 @@ auth.set_access_token(access_token, access_token_secret)
 
 api = tweepy.API(auth, wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
 
-def save_data(results):
+def save_data(result):
     db = Database()
-    for result in results:
-        try:
-            text = result.retweeted_status.full_text
-        except:
-            text = result.full_text
-        name = result.user.screen_name
-        img = result.user.profile_image_url
-        id_user = result.id
-        followers = result.user.followers_count
-        location = result.user.location
-        if sentiment(text) and db.matches(text):
-            db.save(id_user,name,text,img,followers,location)
+    try:
+        text = result.retweeted_status.full_text
+    except:
+        text = result.full_text
+    name = result.user.screen_name
+    img = result.user.profile_image_url
+    id_user = result.id
+    followers = result.user.followers_count
+    location = result.user.location
+    if sentiment(text) and db.matches(text):
+        db.save(id_user,name,text,img,followers,location)
 
 def collect(minutes):
     db = Database()
     db.create_table()
-    query = random.choice(adjectives())
-    print('collecting tweets with key %s for %d minutes' %(normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'),minutes))
-    timeout = time.time() + 60*minutes
-    while True:
-        results = tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items()
-        save_data(results)
-        if time.time() > timeout:
-            break
+    for i in range(len(adjectives())):
+        query = random.choice(adjectives())
+        print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
+        for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
+            if result:
+                save_data(result)
+            else:
+                break
