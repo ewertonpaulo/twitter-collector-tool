@@ -34,7 +34,6 @@ def collect(min_per_query,min_search):
         for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
             if result:
                 save_data(result)
-            elif time.time() > timeout:
-                break
-            else:
+            if time.time() > timeout:
+                print('timeout')
                 break
