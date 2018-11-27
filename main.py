@@ -1,3 +1,3 @@
 from tweetcollector.collector import collect
 
-collect(5)
+collect(30,1440)
