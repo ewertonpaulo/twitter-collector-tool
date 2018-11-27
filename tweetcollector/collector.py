@@ -31,9 +31,13 @@ def collect(min_per_query,min_search):
         timeout = time.time() + min_per_query*60
         query = random.choice(adjectives())
         print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
-        for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
-            if result:
-                save_data(result)
-            if time.time() > timeout:
-                print('timeout')
-                break
+        try:
+            for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
+                if result:
+                    save_data(result)
+                if time.time() > timeout:
+                    print('timeout')
+                    break
+        except tweepy.error.TweepError:
+            time.sleep(60)
+            collect(min_per_query,min_search)
