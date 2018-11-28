@@ -26,6 +26,7 @@ def save_data(result):
 def collect(min_per_query,min_search):
     db = Database()
     db.create_table()
+    print(min_search)
     search_time = time.time() + min_search*60
     while time.time() < search_time:
         timeout = time.time() + min_per_query*60
@@ -39,5 +40,7 @@ def collect(min_per_query,min_search):
                     print('timeout')
                     break
         except tweepy.error.TweepError:
-            time.sleep(60)
+            error_time = time.time()
+            time.sleep(30)
+            min_search = (search_time - error_time) / 60
             collect(min_per_query,min_search)
