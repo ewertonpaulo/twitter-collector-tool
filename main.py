@@ -1,3 +1,4 @@
-from tweetcollector.collector import collect
+from tweetcollector.collector import Collector
 
-collect(30,1440)
+cl = Collector()
+cl.collect(1,1440)
