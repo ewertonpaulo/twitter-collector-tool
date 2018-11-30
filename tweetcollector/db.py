@@ -47,8 +47,6 @@ class Database:
             else:
                 all.append(text)
                 self.insert(id_twitter,name,text,image,followers,location)
-                count+=1
-        return count
 
     def str_(self,string):
         string = str(string)

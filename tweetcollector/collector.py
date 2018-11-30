@@ -36,7 +36,6 @@ class Collector():
             self.doing(search_time,self.api,timeout, min_search)
 
     def doing(self,search_time,api,timeout, min_search):
-        count = 0
         self.all = self.db.get_all()
         query = random.choice(self.st.adjectives())
         print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
