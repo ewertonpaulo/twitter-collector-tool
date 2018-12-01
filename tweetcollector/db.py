@@ -34,19 +34,40 @@ class Database:
             pass
 
     def get_all(self):
-        sql = "SELECT text FROM public.tweet ORDER BY id ASC"
+        sql = "SELECT id_twitter,text FROM public.tweet ORDER BY id ASC"
         self.cursor.execute(sql)
-        all = [r[0] for r in self.cursor.fetchall()]
+        all = [r for r in self.cursor.fetchall()]
         return all
 
     def save(self, id_twitter,name,text,image,followers,location, all):
         if self.st.sentiment_avg(text):
-            diff = difflib.get_close_matches(text, all)
+            diff = self.close_matches(text, all)
             if diff:
                 pass
             else:
-                all.append(text)
+                all.append((id_twitter,text))
                 self.insert(id_twitter,name,text,image,followers,location)
+
+    def delete(self, id):
+        sql = "DELETE FROM public.tweet WHERE id = %s" %id
+        self.cursor.execute(sql)
+
+    def close_matches(self, text,all):
+        matches = []
+        rage_text = int(len(text)/3)
+        for i in all:
+            count = 0
+            for y in range(rage_text):
+                try:
+                    if i[1][y]==text[y]:
+                        count+=1
+                except:
+                    break
+                if y == 0 and count==0:
+                    break
+            if count == rage_text:
+                matches.append(i)
+        return matches
 
     def str_(self,string):
         string = str(string)
