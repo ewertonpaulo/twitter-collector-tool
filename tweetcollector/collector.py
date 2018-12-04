@@ -37,6 +37,7 @@ class Collector():
             try:
                 self.doing(self.api,timeout)
             except tweepy.TweepError as e:
+                self.auth()
                 print(e.reason)
                 self.doing(self.api,timeout)
 
