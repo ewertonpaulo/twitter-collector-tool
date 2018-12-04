@@ -42,6 +42,7 @@ class Collector():
         try:
             for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
                 if result:
+                    time.sleep(0.3)
                     self.save_data(query,result)
                 if time.time() > timeout:
                     break
