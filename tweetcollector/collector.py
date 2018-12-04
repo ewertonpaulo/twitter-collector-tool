@@ -35,13 +35,12 @@ class Collector():
         self.all = self.db.get_all()
         while time.time() < search_time:
             try:
-                self.doing(search_time,self.api,timeout, min_search)
+                self.doing(self.api,timeout)
             except tweepy.TweepError as e:
                 print(e.reason)
-                time.sleep(30)
-                continue
+                self.doing(self.api,timeout)
 
-    def doing(self,search_time,api,timeout, min_search):
+    def doing(self,api,timeout):
         query = random.choice(self.st.adjectives())
         print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
         for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
