@@ -34,6 +34,7 @@ class Database:
             pass
 
     def get_all(self):
+        print('Waiting for query execution')
         sql = "SELECT id_twitter,text FROM public.tweet ORDER BY id ASC"
         self.cursor.execute(sql)
         all = [r for r in self.cursor.fetchall()]
