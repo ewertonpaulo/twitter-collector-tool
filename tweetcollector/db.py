@@ -58,7 +58,7 @@ class Database:
             else:
                 all.append((id_twitter,text))
                 self.insert(id_twitter,name,text,image,followers,location)
-                #time.sleep(3)
+                time.sleep(3)
 
     def delete(self, id):
         sql = "DELETE FROM public.tweet WHERE id = %s" %id
@@ -83,9 +83,9 @@ class Database:
 
     def str_(self,string):
         string = str(string)
+        string = string.encode('utf-8').decode('utf-8')
         string = string.replace("'","\'")
         string = string.replace('"',"\"")
-        string = string.encode('utf-8').decode('utf-8')
         return string
 
     def normalize(self,string):
