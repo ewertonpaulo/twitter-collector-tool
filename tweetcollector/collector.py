@@ -11,8 +11,9 @@ class Collector():
         self.db = Database()
         self.report = Report()
         self.st = Sentiment()
-        self.api = None
         self.all = None
+        self.auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        self.auth.set_access_token(access_token, access_token_secret)
 
     def save_data(self, query, result):
         try:
@@ -29,19 +30,18 @@ class Collector():
     def collect(self, min_per_query, min_search):
         self.db = Database()
         self.db.create_table()
-        self.auth()
         timeout = time.time() + min_per_query*60
         search_time = time.time() + min_search*60
         self.all = self.db.get_all()
         while time.time() < search_time:
             try:
-                self.doing(self.api,timeout)
+                self.doing(timeout)
             except tweepy.TweepError as e:
-                self.auth()
                 print(e.reason)
-                self.doing(self.api,timeout)
+                self.doing(timeout)
 
-    def doing(self,api,timeout):
+    def doing(self,timeout):
+        api = self.auth_()
         query = random.choice(self.st.adjectives())
         print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
         for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
@@ -51,7 +51,6 @@ class Collector():
                 break
         # ConnectionError
 
-    def auth(self):
-        auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-        auth.set_access_token(access_token, access_token_secret)
-        self.api = tweepy.API(auth, wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
+    def auth_(self):
+        api = tweepy.API(self.auth, wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
+        return api
