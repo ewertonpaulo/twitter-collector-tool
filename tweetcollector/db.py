@@ -58,7 +58,7 @@ class Database:
             else:
                 all.append((id_twitter,text))
                 self.insert(id_twitter,name,text,image,followers,location)
-                time.sleep(3)
+                #time.sleep(3)
 
     def delete(self, id):
         sql = "DELETE FROM public.tweet WHERE id = %s" %id
