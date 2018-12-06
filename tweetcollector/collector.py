@@ -37,7 +37,7 @@ class Collector():
             timeout = time.time() + min_per_query*60
             query = random.choice(self.st.adjectives())
             print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
-            self.doing(timeout, query, count)
+            count = self.doing(timeout, query, count)
             self.report.save_report(query, count)
 
     def doing(self,timeout, query, count):
