@@ -30,27 +30,27 @@ class Collector():
     def collect(self, min_per_query, min_search):
         self.db = Database()
         self.db.create_table()
-        timeout = time.time() + min_per_query*60
         search_time = time.time() + min_search*60
         self.all = self.db.get_all()
         while time.time() < search_time:
-            try:
-                self.doing(timeout)
-            except tweepy.TweepError as e:
-                print(e.reason)
-                print('waiting 60 seconds')
-                time.sleep(60)
-                continue
+            timeout = time.time() + min_per_query*60
+            query = random.choice(self.st.adjectives())
+            print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
+            self.doing(timeout, query)
 
-    def doing(self,timeout):
+    def doing(self,timeout, query):
         api = self.auth_()
-        query = random.choice(self.st.adjectives())
-        print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
-        for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
-            if result:
-                self.save_data(query,result)
-            if time.time() > timeout:
-                break
+        try:
+            for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
+                if result:
+                    self.save_data(query,result)
+                if time.time() > timeout:
+                    break
+        except:
+            print('waiting 60 seconds')
+            time.sleep(60)
+            timeout += 60
+            self.doing(timeout, query)
         # ConnectionError
 
     def auth_(self):
