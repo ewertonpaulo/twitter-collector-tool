@@ -36,12 +36,12 @@ class Collector():
             count = 0
             timeout = time.time() + min_per_query*60
             query = random.choice(self.st.adjectives())
-            print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
             count = self.doing(timeout, query, count)
             self.report.save_report(query, count)
 
     def doing(self,timeout, query, count):
         api = self.auth_()
+        print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
         try:
             for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
                 if result:
@@ -49,14 +49,11 @@ class Collector():
                         count+=1
                 if time.time() > timeout:
                     break
-        except:
-            print('waiting 60 seconds')
-            time.sleep(60)
-            timeout += 60
+        except tweepy.error.RateLimitError:
             self.doing(timeout, query, count)
         return count
         # ConnectionError
 
     def auth_(self):
-        api = tweepy.API(self.auth)
+        api = tweepy.API(self.auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
         return api
