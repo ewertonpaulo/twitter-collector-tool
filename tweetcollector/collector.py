@@ -38,7 +38,9 @@ class Collector():
                 self.doing(timeout)
             except tweepy.TweepError as e:
                 print(e.reason)
-                self.doing(timeout)
+                print('waiting 60 seconds')
+                time.sleep(60)
+                continue
 
     def doing(self,timeout):
         api = self.auth_()
@@ -52,5 +54,5 @@ class Collector():
         # ConnectionError
 
     def auth_(self):
-        api = tweepy.API(self.auth, wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
+        api = tweepy.API(self.auth)
         return api

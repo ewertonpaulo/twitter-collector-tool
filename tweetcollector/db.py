@@ -36,12 +36,8 @@ class Database:
         %(id_twitter,self.str_(name),self.str_(text),image,followers,self.str_(location)))
         try:
             self.cursor.execute(insert_command)
-        except UnicodeEncodeError:
-            self.connect()
-            insert_command = ("INSERT INTO tweet(id_twitter, name, text, image, followers, location)\
-            VALUES('%s','%s','%s','%s','%d','%s')" 
-            %(id_twitter,self.normalize(name),self.normalize(text),image,followers,self.normalize(location)))
-            self.cursor.execute(insert_command)
+        except:
+            pass
 
     def get_all(self):
         print('Waiting for query execution')
@@ -84,10 +80,6 @@ class Database:
     def str_(self,string):
         string = str(string)
         string = string.encode('utf-8').decode('utf-8')
-        string = string.replace("'","\'")
+        string = string.replace("'","´")
         string = string.replace('"',"\"")
         return string
-
-    def normalize(self,string):
-        string = self.str_(string)
-        return normalize('NFKD', string).encode('ASCII', 'ignore').decode('ASCII')
