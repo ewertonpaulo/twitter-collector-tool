@@ -51,11 +51,13 @@ class Database:
             diff = self.close_matches(text, all)
             if diff:
                 pass
+                return False
             else:
                 all.append((id_twitter,text))
                 self.insert(id_twitter,name,text,image,followers,location)
+                return True
                 #time.sleep(3)
-
+    
     def delete(self, id):
         sql = "DELETE FROM public.tweet WHERE id = %s" %id
         self.cursor.execute(sql)

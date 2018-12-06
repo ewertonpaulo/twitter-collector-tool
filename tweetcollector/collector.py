@@ -25,7 +25,7 @@ class Collector():
         img = result.user.profile_image_url
         followers = result.user.followers_count
         location = result.user.location
-        self.db.save(id_twitter,name,text,img,followers,location,self.all)
+        return self.db.save(id_twitter,name,text,img,followers,location,self.all)
 
     def collect(self, min_per_query, min_search):
         self.db = Database()
@@ -33,24 +33,28 @@ class Collector():
         search_time = time.time() + min_search*60
         self.all = self.db.get_all()
         while time.time() < search_time:
+            count = 0
             timeout = time.time() + min_per_query*60
             query = random.choice(self.st.adjectives())
             print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
-            self.doing(timeout, query)
+            self.doing(timeout, query, count)
+            self.report.save_report(query, count)
 
-    def doing(self,timeout, query):
+    def doing(self,timeout, query, count):
         api = self.auth_()
         try:
             for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
                 if result:
-                    self.save_data(query,result)
+                    if self.save_data(query,result):
+                        count+=1
                 if time.time() > timeout:
                     break
         except:
             print('waiting 60 seconds')
             time.sleep(60)
             timeout += 60
-            self.doing(timeout, query)
+            self.doing(timeout, query, count)
+        return count
         # ConnectionError
 
     def auth_(self):
