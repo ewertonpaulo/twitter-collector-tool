@@ -3,3 +3,4 @@ env
 auth.py
 __pycache__
 senticnet
+dicionario.json

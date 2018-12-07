@@ -1,39 +1,56 @@
-import tweepy, random, time
-from tweetcollector.db import Database
+import tweepy, random, time, json
 from unicodedata import normalize
-from tweetcollector.senticnet_instance import sentiment, adjectives
+from tweetcollector.db import Database
+from tweetcollector.report import Report
+from tweetcollector.senticnet_instance import Sentiment
 from auth import access_token, access_token_secret, consumer_key, consumer_secret
 
-auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
-auth.set_access_token(access_token, access_token_secret)
 
-api = tweepy.API(auth, wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
+class Collector():
+    def __init__(self):
+        self.db = Database()
+        self.db.create_table()
+        self.report = Report()
+        self.st = Sentiment()
+        self.all = None
+        self.auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
+        self.auth.set_access_token(access_token, access_token_secret)
 
-def save_data(result):
-    db = Database()
-    try:
-        text = result.retweeted_status.full_text
-    except:
-        text = result.full_text
-    name = result.user.screen_name
-    img = result.user.profile_image_url
-    id_user = result.id
-    followers = result.user.followers_count
-    location = result.user.location
-    if sentiment(text) and db.matches(text):
-        db.save(id_user,name,text,img,followers,location)
+    def save_data(self, query, result):
+        try:
+            text = result.retweeted_status.full_text
+        except:
+            text = result.full_text
+        id_twitter = result.id
+        name = result.user.screen_name
+        img = result.user.profile_image_url
+        followers = result.user.followers_count
+        location = result.user.location
+        self.db.save(id_twitter,name,text,img,followers,location,self.all)
 
-def collect(min_per_query,min_search):
-    db = Database()
-    db.create_table()
-    search_time = time.time() + min_search*60
-    while time.time() < search_time:
-        timeout = time.time() + min_per_query*60
-        query = random.choice(adjectives())
+    def collect(self, min_per_query, min_search):
+        search_time = time.time() + min_search*60
+        self.all = self.db.get_all()
+        while time.time() < search_time:
+            timeout = time.time() + min_per_query*60
+            query = random.choice(self.st.adjectives())
+            try:
+                self.doing(timeout, query)
+            except tweepy.error.TweepError:
+                error_time = time.time()
+                time.sleep(30)
+                min_search = (search_time - error_time) / 60
+                self.collect(min_per_query,min_search)
+
+    def doing(self,timeout, query):
+        api = self.auth_()
         print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
         for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
             if result:
-                save_data(result)
+                self.save_data(query,result)
             if time.time() > timeout:
-                print('timeout')
                 break
+
+    def auth_(self):
+        api = tweepy.API(self.auth,wait_on_rate_limit=True,wait_on_rate_limit_notify=True)
+        return api
