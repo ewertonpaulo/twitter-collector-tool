@@ -1,6 +1,7 @@
 import tweepy, random, time, json
 from unicodedata import normalize
 from tweetcollector.db import Database
+from tweetcollector.report import Report
 from tweetcollector.senticnet_instance import Sentiment
 from auth import access_token, access_token_secret, consumer_key, consumer_secret
 
@@ -9,6 +10,7 @@ class Collector():
     def __init__(self):
         self.db = Database()
         self.st = Sentiment()
+        self.rp = Report()
         self.auth = tweepy.OAuthHandler(consumer_key, consumer_secret)
         self.auth.set_access_token(access_token, access_token_secret)
 
@@ -27,10 +29,12 @@ class Collector():
 
     def doing(self,timeout, query):
         api = self.auth_()
+        last = self.rp.last_id(query)
         print('collecting tweets with key %s' %normalize('NFKD', query).encode('ASCII', 'ignore').decode('ASCII'))
-        for result in tweepy.Cursor(api.search, q=query, tweet_mode="extended", lang="pt").items():
+        for result in tweepy.Cursor(api.search, q=query, since_id=last, tweet_mode="extended", lang="pt").items():
             if result:
-                self.db.save(result)
+                self.db.save(result, query)
+                self.rp.last_id_tweet(query,result.id)
             if time.time() > timeout:
                 break
 

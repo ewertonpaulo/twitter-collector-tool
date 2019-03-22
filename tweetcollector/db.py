@@ -21,34 +21,34 @@ class Database:
         self.cursor = self.connection.cursor()
 
     def create_table(self):
-        create_table_command = ("CREATE TABLE IF NOT EXISTS tweet(id serial PRIMARY KEY, id_twitter varchar(50),\
+        create_table_command = ("CREATE TABLE IF NOT EXISTS tweets(id serial PRIMARY KEY, id_twitter varchar(50),\
         name varchar(500), text varchar(500), image varchar(300), followers integer, location varchar(200),\
-        classification varchar(216));")
+        classification varchar(216), query varchar(200));")
         self.cursor.execute(create_table_command)
 
-    def insert(self,id_twitter,name,text,image,followers,location):
-        insert_command = ("INSERT INTO tweet(id_twitter, name, text, image, followers, location)\
-         VALUES('%s','%s','%s','%s','%d','%s')" 
-        %(id_twitter,self.str_(name),self.str_(text),image,followers,self.str_(location)))
+    def insert(self,id_twitter,name,text,image,followers,location, query):
+        insert_command = ("INSERT INTO tweets(id_twitter, name, text, image, followers, location, query)\
+         VALUES('%s','%s','%s','%s','%d','%s','%s')" 
+        %(id_twitter,self.str_(name),self.str_(text),image,followers,self.str_(location), query))
         self.cursor.execute(insert_command)
 
     def get_all(self):
-        sql = "SELECT id_twitter,text FROM public.tweet ORDER BY id ASC"
+        sql = "SELECT id_twitter,text FROM public.tweets ORDER BY id ASC"
         self.cursor.execute(sql)
         all = [r for r in self.cursor.fetchall()]
         return all
 
-    def main(self, id_twitter,name,text,image,followers,location):
+    def main(self, id_twitter,name,text,image,followers,location, query):
         if self.st.sentiment_avg(text):
             diff = self.close_matches(text)
             if diff:
                 pass
             else:
                 self.all.append((id_twitter,text))
-                self.insert(id_twitter,name,text,image,followers,location)
+                self.insert(id_twitter,name,text,image,followers,location, query)
     
     def delete(self, id):
-        sql = "DELETE FROM public.tweet WHERE id = %s" %id
+        sql = "DELETE FROM public.tweets WHERE id = %s" %id
         self.cursor.execute(sql)
 
     def close_matches(self, text):
@@ -68,7 +68,7 @@ class Database:
                 matches.append(i)
         return matches
 
-    def save(self, result):
+    def save(self, result, query):
         try:
             text = result.retweeted_status.full_text
         except:
@@ -78,7 +78,7 @@ class Database:
         img = result.user.profile_image_url
         followers = result.user.followers_count
         location = result.user.location
-        self.main(id_twitter,name,text,img,followers,location)
+        self.main(id_twitter,name,text,img,followers,location, query)
 
     def str_(self,string):
         string = str(string)
