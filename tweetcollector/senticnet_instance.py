@@ -43,4 +43,4 @@ class Sentiment():
         data = codecs.open(dir_,'r','utf8')
         list = data.readline()
         data.close()
-        return list.split()
+        return list.split(',')
