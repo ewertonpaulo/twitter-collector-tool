@@ -29,8 +29,7 @@ from tweetcollector.collector import collect
 
 collect(5)
 ```
-The function collect will pick a adjective of a txt file and start the search. As parameter of collect you put the number of minuts you expect to search.
-main.py is a example of script, you can run on your prompt by the following command in the directory of the aplication:
+The function collect will pick an adjective of a text file and start the search. As parameter of collect you put the number of minutes you expect to search. main.py is an example of script, you can run on your prompt by the following command in the directory of the application:
 ```
 python main.py
 ```
